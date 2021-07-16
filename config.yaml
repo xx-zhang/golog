@@ -1,0 +1,7 @@
+config:
+  - modsec_logpath: "D:\\home\\audit_modsec.log"
+  - mysql_host: "10.27.106.246"
+  - mysql_port: "3306"
+  - mysql_db: "loger"
+  - mysql_user: "root"
+  - mysql_path: "port"
