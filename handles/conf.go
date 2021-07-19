@@ -16,21 +16,21 @@ type Configs struct {
 	} `yaml:"mysql"`
 
 	Modsec []struct {
-		Logpath    string `yaml:"logpath"`
+		LogPath    string `yaml:"logpath"`
 	} `yaml:"modsec"`
 
 }
 
 
 func GetConf(filepath string) Configs {
-	data, err_data := ioutil.ReadFile(filepath)
-	if err_data != nil {
-		fmt.Println(err_data)
+	data, errData := ioutil.ReadFile(filepath)
+	if errData != nil {
+		fmt.Println(errData)
 	}
-	confs := Configs{}
-	err_yaml := yaml.Unmarshal(data, &confs)
-	if err_yaml != nil {
-		fmt.Println(err_yaml)
+	coifs := Configs{}
+	errYaml := yaml.Unmarshal(data, &coifs)
+	if errYaml != nil {
+		fmt.Println(errYaml)
 	}
-	return confs
+	return coifs
 }

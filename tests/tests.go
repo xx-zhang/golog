@@ -31,3 +31,29 @@ func TestStruct(a interface{})  {
 		}
 	}
 }
+
+
+
+func g() {
+	defer func() {
+		fmt.Println("b")
+		if err := recover();err != nil {
+			fmt.Println(err)
+		}
+		fmt.Println("d")
+	}()
+	f()
+	fmt.Println("G ")
+}
+
+func f() {
+	fmt.Println("function A")
+	panic("a bug occur")
+	fmt.Println("function C")
+}
+
+
+func TestPanic()  {
+		g()
+		fmt.Println("最后一句")
+}

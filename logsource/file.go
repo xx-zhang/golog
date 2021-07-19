@@ -1,26 +1,27 @@
 package logsource
 
 import (
-	"github.com/hpcloud/tail"
+	"encoding/json"
 	"fmt"
-	"time"
+	"github.com/hpcloud/tail"
 	conf "golog/handles"
 )
 
-func TailPath(path string)  {
-	fmt.Printf(path)
+type LineData struct {
+	Datetime   string   `json:"datetime"`
+	Uid string `json:"uid"`
+	Index int `json:"index"`
 }
-
 
 func TailExample() {
 	config := conf.GetConf("D:\\home\\projects\\golog\\config.yaml")
-	logpath := config.Modsec[0].Logpath
-	tailFile, err := tail.TailFile(logpath, tail.Config{
+	logPath := config.Modsec[0].LogPath
+	tailFile, err := tail.TailFile(logPath, tail.Config{
 		ReOpen:    true,
 		Follow:    true,
-		Location:  &tail.SeekInfo{Offset: 0, Whence: 2},
+		Location:  &tail.SeekInfo{Offset: 0, Whence: 1},
 		MustExist: false,
-		Poll:      true,
+		Poll:      false, // 这里如果改成true就读取不到了。
 	})
 
 	if err != nil {
@@ -28,13 +29,16 @@ func TailExample() {
 		return
 	}
 
-	for true {
-		msg, ok := <- tailFile.Lines
-		if !ok {
-			fmt.Printf("tail file close reopen, filename: %s\n", tailFile.Filename)
-			time.Sleep(100 * time.Millisecond)
-			continue
-		}
-		fmt.Println("msg:", msg)
+	for line := range tailFile.Lines {
+		//
+		//fmt.Println(line.Text)
+		linda := &LineData{}
+		err := json.Unmarshal([] byte(line.Text), linda)
+		// 抛出的 panic 被自己 defer 语句中的 recover 捕获
+		//fmt.Println(line.Text)
+		fmt.Println(err)
+		fmt.Println(*linda)
 	}
+	//fmt.Printf(msg.Text)
+
 }

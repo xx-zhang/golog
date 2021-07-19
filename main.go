@@ -1,26 +1,46 @@
 package main
 
-//import db "golog/models"
 import (
 	"fmt"
-	conf "golog/handles"
-	path "golog/utils"
-	//"log"
-	//"reflect"
-	//"golog/tests"
+	file "golog/logsource"
+	localTests "golog/tests"
+	//rdfile "golog/handles"
+	modsec "golog/dao"
+	parser "golog/handles"
+	"math/rand"
+	"time"
 )
 
+func testTime() {
+	fmt.Printf("3333")
+
+}
+
+func tset11(){
+	file.TailExample()
+}
+
+func test2() {
+	localTests.TestSpyder()
+}
+
+func test3()  {
+	modsec.GetRandLine()
+}
+
+func test4(){
+	parser.PaserTime()
+
+}
+
+
+func randC() {
+	rand.Seed(time.Now().UnixNano())
+	k := rand.Intn(150)
+	fmt.Println(k)
+}
 
 func main() {
-	var str1, str2 string
-	str1 = path.GetCurrentDirectory()
-	fmt.Println(str1)
-	str2 = path.GetParentDirectory(str1)
-	fmt.Println(str2)
-
-
-	datas := conf.GetConf("D:\\home\\projects\\golog\\config.yaml")
-
-	fmt.Println(datas.Mysql[0].Database)
-
+	//randC()
+	test4()
 }
