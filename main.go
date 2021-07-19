@@ -3,9 +3,13 @@ package main
 //import db "golog/models"
 import (
 	"fmt"
-	path "golog/utils"
 	conf "golog/handles"
+	path "golog/utils"
+	//"log"
+	//"reflect"
+	//"golog/tests"
 )
+
 
 func main() {
 	var str1, str2 string
@@ -16,5 +20,7 @@ func main() {
 
 
 	datas := conf.GetConf("D:\\home\\projects\\golog\\config.yaml")
-	fmt.Print(datas)
+
+	fmt.Println(datas.Mysql[0].Database)
+
 }

@@ -7,12 +7,18 @@ import (
 )
 
 type Configs struct {
-	Conf []struct {
-		Name    string `yaml:"host"`
-		Filter  string `yaml:"filter"`
-		Pattern string `yaml:"pattern"`
-		Rule    string `yaml:"rule"`
+	Mysql []struct {
+		Host    string `yaml:"host"`
+		Port  string `yaml:"port"`
+		Database string `yaml:"database"`
+		Username    string `yaml:"username"`
+		Password    string `yaml:"password"`
 	} `yaml:"mysql"`
+
+	Modsec []struct {
+		Logpath    string `yaml:"logpath"`
+	} `yaml:"modsec"`
+
 }
 
 
