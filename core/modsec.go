@@ -12,28 +12,28 @@ import (
 
 // 定义 `Mod sec` 输出日志的结构体
 type AuditLogItem struct {
-	Timestamp time.Time
-	ClientIp string
-	ClientPort int
-	UniqId string
-	ServerID string
-	HostIp string
-	HostPort int
-	SessionNum int
-	RequestMethod string
-	RequestUri string
-	RequestBody string
-	HttpVersion string
-	UserAgent string
-	RequestPayload string
-	RequestHeaders string
-	ResponseBody string
-	ResponseStatus int
-	ResponseHeaders string
-	ResponseContentType string 
-	EventMsg string
-	EventCate string
-	WAFInfo string
+	Timestamp time.Time  `db:"event_time"`
+	ClientIp string	     `db:"client_ip"`
+	ClientPort int		 `db:"client_port"`
+	UniqId string		 `db:"unique_id"`
+	ServerID string      `db:"server_id"`
+	HostIp string		 `db:"host_ip"`
+	HostPort int	     `db:"host_port"`
+	//SessionNum int       `db:"session_num"`
+	RequestMethod string `db:"method"`
+	RequestUri string    `db:"uri"`
+	RequestBody string   `db:"req_body"`
+	HttpVersion string   `db:"http_version"`
+	UserAgent string     `db:"user_agent"`
+	RequestPayload string  `db:"args"`
+	RequestHeaders string  `db:"req_headers"`
+	ResponseBody string    `db:"res_body"`
+	ResponseStatus int	   `db:"status"`
+	ResponseHeaders string  `db:"res_headers"`
+	ResponseContentType string  `db:"res_c_type"`
+	EventMsg string       `db:"msg"`
+	EventCate string      `db:"category"`
+	WAFInfo string        `db:"waf_info"`
 }
 
 type AuditMsg struct {
@@ -85,6 +85,8 @@ func ParseSingleLine(line string) AuditLogItem {
 		auditItem.RequestMethod = transaction.Get("request.method").String()
 		auditItem.HttpVersion = transaction.Get("request.http_version").String()
 		auditItem.RequestUri = transaction.Get("request.uri").String()
+		auditItem.RequestPayload = transaction.Get("request.args").String()
+		auditItem.ResponseContentType = transaction.Get("response.headers.Content-Type").String()
 		//auditItem.RequestHeaders = transaction.Get("request.headers").String()
 		//auditItem.RequestBody = transaction.Get("request.body").String()
 		//auditItem.ResponseHeaders = transaction.Get("response.headers").String()

@@ -9,7 +9,7 @@ import (
 type Configs struct {
 	Mysql []struct {
 		Host    string `yaml:"host"`
-		Port  string `yaml:"port"`
+		Port  int `yaml:"port"`
 		Database string `yaml:"database"`
 		Username    string `yaml:"username"`
 		Password    string `yaml:"password"`
@@ -27,10 +27,10 @@ func GetConf(filepath string) Configs {
 	if errData != nil {
 		fmt.Println(errData)
 	}
-	coifs := Configs{}
-	errYaml := yaml.Unmarshal(data, &coifs)
+	cfgs := Configs{}
+	errYaml := yaml.Unmarshal(data, &cfgs)
 	if errYaml != nil {
 		fmt.Println(errYaml)
 	}
-	return coifs
+	return cfgs
 }

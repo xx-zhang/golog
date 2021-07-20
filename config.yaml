@@ -1,8 +1,10 @@
 mysql:
   - host: "10.27.106.188"
-    port: "3306"
-    database: "loger"
+    port: 3306
+    database: "logger1"
     username: "root"
     password: "test@1q2w2e4R"
 modsec:
   - logpath: "D:\\home\\audit_modsec.log"
+    maxnum: 200
+    timelen: 5
