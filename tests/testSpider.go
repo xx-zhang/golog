@@ -2,7 +2,7 @@ package tests
 
 import (
 	"fmt"
-	test "golog/dao"
+	test "golog/core"
 )
 
 func TestSpyder() {

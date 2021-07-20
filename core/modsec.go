@@ -1,16 +1,16 @@
-package dao
+package core
 
 import (
 	"fmt"
 	"github.com/tidwall/gjson"
 	rdfile "golog/handles"
+	data "golog/core/data"
 	"strconv"
-
+	"strings"
 	"time"
 )
 
-// 定义 Modscurity 输出日志的结构体
-
+// 定义 `Mod sec` 输出日志的结构体
 type AuditLogItem struct {
 	Timestamp time.Time
 	ClientIp string
@@ -31,66 +31,88 @@ type AuditLogItem struct {
 	ResponseStatus int
 	ResponseHeaders string
 	ResponseContentType string 
-	AuditMsg string 
+	EventMsg string
+	EventCate string
 	WAFInfo string
 }
 
+type AuditMsg struct {
+	RuleID int
+	RuleFile string
+	Match string
+	Msg string
+	Category string
+}
 
-const TIME_LAYOUT = "Thu Jul  1 04:03:29 2021"
-const C_TIME_LAYLOUT = "2006-01-02 15:04:05"
+func parseMsg(msgs []gjson.Result ) AuditMsg {
+	var minId int
+	var resMsg AuditMsg
+	for index, msg := range msgs{
+		am  := &AuditMsg{}
+		am.Msg = msg.Get("message").String()
+		temps := strings.Split(msg.Get("details.file").String(), "/")
+		am.RuleFile = temps[len(temps)-1]
+		am.RuleID, _ = strconv.Atoi(msg.Get("details.ruleId").String())
+		if index == 0 {
+			minId = am.RuleID
+			resMsg = *am
+		} else {
+			if am.RuleID < minId {
+				minId = am.RuleID
+				resMsg = *am
+			}
+		}
+	}
+	crsMapping:= data.CrsRuleMapping
+	resMsg.Category = crsMapping[resMsg.RuleFile]
+	return resMsg
+}
+
+
+func ParseSingleLine(line string) AuditLogItem {
+	var resData AuditLogItem
+	auditItem := &AuditLogItem{}
+	gjson.ForEachLine(line, func(line gjson.Result) bool {
+		transaction := line.Get("transaction")
+		auditItem.ClientIp = transaction.Get("client_ip").String()
+		dateStr := transaction.Get("time_stamp").String()
+		auditItem.Timestamp = rdfile.ParseDateTime(dateStr)
+
+		auditItem.ServerID = transaction.Get("server_id").String()
+		auditItem.UniqId = transaction.Get("unique_id").String()
+		auditItem.HostIp = transaction.Get("host_ip").String()
+		auditItem.HostPort, _ = strconv.Atoi(transaction.Get("host_port").String())
+		auditItem.RequestMethod = transaction.Get("request.method").String()
+		auditItem.HttpVersion = transaction.Get("request.http_version").String()
+		auditItem.RequestUri = transaction.Get("request.uri").String()
+		//auditItem.RequestHeaders = transaction.Get("request.headers").String()
+		//auditItem.RequestBody = transaction.Get("request.body").String()
+		//auditItem.ResponseHeaders = transaction.Get("response.headers").String()
+		//auditItem.ResponseBody = transaction.Get("response.body").String()
+		//auditItem.EventMsg = transaction.Get("messages").String()
+		//auditItem.WAFInfo = transaction.Get("producer").String()
+		auditItem.ResponseStatus, _ = strconv.Atoi(transaction.Get("response.http_code").String())
+		// TODO 开始解析 msg 的信息模块。
+		alertMsg := parseMsg(transaction.Get("messages").Array())
+		auditItem.EventCate = alertMsg.Category
+		auditItem.EventMsg = alertMsg.Msg
+		resData = *auditItem
+		return true
+	})
+	return resData
+}
+
+
+
 
 func GetRandLine(){
 	lines := rdfile.ReadFile()
-	//fmt.Println(lines[0:1])
-	//fmt.Println("-------------------")
-	//rand.Seed(time.Now().UnixNano())
-	//randIndex := rand.Intn(30)
-	//randLine := lines[randIndex:randIndex+1]
+
 	for _, line  := range lines {
-		auditItem := &AuditLogItem{}
-		gjson.ForEachLine(line, func(line gjson.Result) bool{
-			transaction := line.Get("transaction")
-			auditItem.ClientIp = transaction.Get("client_ip").String()
-			//demo := transaction.Get("time_stamp").String()
-			//d := time.Parse()
-			datestr := transaction.Get("time_stamp").String()
-			//now := time.Now().UTC().Format(time.ANSIC)
-			//fmt.Println(now)
-			t, err := time.Parse(TIME_LAYOUT, datestr)
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			fmt.Println(t.Format(C_TIME_LAYLOUT))
-			fmt.Println(datestr)
-
-			//result, _ := dateutil.DateTime("VV")
-			//fmt.Println(datestr)
-
-			//fmt.Println(result)
-
-			auditItem.ServerID = transaction.Get("server_id").String()
-			auditItem.UniqId = transaction.Get("unique_id").String()
-			auditItem.HostIp = transaction.Get("host_ip").String()
-			auditItem.HostPort, _ = strconv.Atoi(transaction.Get("host_port").String())
-			auditItem.RequestHeaders = transaction.Get("request.headers").String()
-			auditItem.RequestMethod = transaction.Get("request.method").String()
-			auditItem.HttpVersion = transaction.Get("request.http_version").String()
-			auditItem.RequestUri = transaction.Get("request.uri").String()
-			auditItem.RequestBody = transaction.Get("request.body").String()
-			auditItem.ResponseBody = transaction.Get("response.body").String()
-			auditItem.ResponseHeaders = transaction.Get("response.headers").String()
-			auditItem.AuditMsg = transaction.Get("messages").String()
-			auditItem.WAFInfo = transaction.Get("producer").String()
-
-			return true
-		})
-
-		//fmt.Println(*auditItem)
-
+		res := ParseSingleLine(line)
+		fmt.Println(res)
 	}
 	//fmt.Println(lines[0])
-
 }
 
 

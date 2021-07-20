@@ -13,6 +13,12 @@ type LineData struct {
 	Index int `json:"index"`
 }
 
+// 创建一个 parser 的
+func worker(start chan bool, index int) {
+	<-start
+	fmt.Println("This is Worker:", index)
+}
+
 func TailExample() {
 	config := conf.GetConf("D:\\home\\projects\\golog\\config.yaml")
 	logPath := config.Modsec[0].LogPath

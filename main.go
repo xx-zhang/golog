@@ -2,11 +2,10 @@ package main
 
 import (
 	"fmt"
+	dao "golog/core"
 	file "golog/logsource"
 	localTests "golog/tests"
-	//rdfile "golog/handles"
-	modsec "golog/dao"
-	parser "golog/handles"
+
 	"math/rand"
 	"time"
 )
@@ -25,14 +24,8 @@ func test2() {
 }
 
 func test3()  {
-	modsec.GetRandLine()
+	dao.GetRandLine()
 }
-
-func test4(){
-	parser.PaserTime()
-
-}
-
 
 func randC() {
 	rand.Seed(time.Now().UnixNano())
@@ -41,6 +34,5 @@ func randC() {
 }
 
 func main() {
-	//randC()
-	test4()
+	localTests.TestChannel()
 }
