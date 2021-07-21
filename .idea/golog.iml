@@ -5,7 +5,18 @@
       <configuration sdkName="Python 3.8 (venv38)" />
     </facet>
   </component>
-  <component name="Go" enabled="true" />
+  <component name="Go" enabled="true">
+    <buildTags>
+      <option name="os" value="linux" />
+      <option name="arch" value="amd64" />
+      <option name="goVersion" value="go1.14" />
+      <option name="customFlags">
+        <array>
+          <option value="v1" />
+        </array>
+      </option>
+    </buildTags>
+  </component>
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
