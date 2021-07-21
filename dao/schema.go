@@ -9,6 +9,7 @@ import (
 	"log"
 	modsec "golog/core"
 	rdfile "golog/handles"
+	logging "golog/utils"
 )
 
 var Db *sqlx.DB
@@ -88,6 +89,10 @@ func InsertMutiData(){
 		}
 		//fmt.Println(res)
 	}
+	BulkInsert(alis)
+}
+
+func BulkInsert(alis []modsec.AuditLogItem ){
 	var query = `INSERT INTO audit_modsec_v1 
 		(event_time, client_ip, client_port, host_ip, 
 		host_port, unique_id, server_id, method, 
@@ -102,10 +107,9 @@ func InsertMutiData(){
 	_, err := Db.NamedExec(query, alis)
 
 	if err != nil {
-		log.Fatalln(err)
+		logging.Error.Fatalln(err)
 		return
 	}
 
-	log.Println("Insert OK...")
-
+	logging.Warning.Println("Insert OK...")
 }

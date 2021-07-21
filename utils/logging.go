@@ -1,29 +1,27 @@
 package utils
 
 import (
-	"fmt"
+	"io"
 	"log"
 	"os"
 )
 
-func Example()  {
-	file, err := os.Create("./test.log")
-	if err != nil {
-		log.Fatalln("fail to create test.log file!")
+var (
+	Info *log.Logger
+	Warning *log.Logger
+	Error * log.Logger
+)
+
+func init(){
+	// https://www.cnblogs.com/oxspirt/p/11960517.html
+
+	errFile,err:=os.OpenFile("golog_running.log",os.O_CREATE|os.O_WRONLY|os.O_APPEND,0666)
+	if err!=nil{
+		log.Fatalln("打开日志文件失败：",err)
 	}
-	logger := log.New(file, "", log.Llongfile)
+	log.SetPrefix("【WafAuditLog】")
+	Info = log.New(os.Stdout,"Info:",log.Ldate | log.Ltime | log.Lshortfile)
+	Warning = log.New(os.Stdout,"Warning:",log.Ldate | log.Ltime | log.Lshortfile)
+	Error = log.New(io.MultiWriter(os.Stderr,errFile),"Error:",log.Ldate | log.Ltime | log.Lshortfile)
 
-
-	// 写入文件log格式：/Users/zhou/go/src/zhouTest/test.go:22: 2.Println log with log.LstdFlags ...
-	logger.Println("2.Println log with log.LstdFlags ...")
-
-	logger.SetFlags(log.LstdFlags)    // 设置写入文件的log日志的格式
-
-	// 写入log文件格式： 2018/07/31 17:28:21 4.Println log without log.LstdFlags ...
-	logger.Println("4.Println log without log.LstdFlags ...")
-
-
-	fmt.Println("打印")
-	logger.Fatal("9.Fatal log without log.LstdFlags ...")
-	fmt.Println("Fatal终止了程序，这句不执行！")
 }

@@ -17,6 +17,8 @@ type Configs struct {
 
 	Modsec []struct {
 		LogPath    string `yaml:"logpath"`
+		MaxNum    int `yaml:"maxnum"`
+		TimeLen    int `yaml:"timelen"`
 	} `yaml:"modsec"`
 
 }
