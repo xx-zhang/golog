@@ -1,21 +1,21 @@
 package dao
 
 import (
+	"fmt"
 	//"database/sql"
 	_ "github.com/go-sql-driver/mysql"
-	"fmt"
 	"github.com/jmoiron/sqlx"
-	conf "golog/handles"
-	"log"
 	modsec "golog/core"
+	conf "golog/handles"
 	rdfile "golog/handles"
 	logging "golog/utils"
+	"log"
 )
 
 var Db *sqlx.DB
 
 func init() {
-	config := conf.GetConf("D:\\home\\projects\\golog\\config.yaml")
+	config := conf.GetConf("config.yaml")
 
 	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
 		config.Mysql[0].Username,

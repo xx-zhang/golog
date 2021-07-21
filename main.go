@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 	"github.com/hpcloud/tail"
-	conf "golog/handles"
-	logging "golog/utils"
 	"golog/core"
 	"golog/dao"
+	conf "golog/handles"
+	logging "golog/utils"
 	"time"
 )
 
@@ -19,7 +19,7 @@ var (
 )
 
 func init () {
-	config := conf.GetConf("D:\\home\\projects\\golog\\config.yaml")
+	config := conf.GetConf("config.yaml")
 	logpath = config.Modsec[0].LogPath
 	maxnum = config.Modsec[0].MaxNum
 	timelen = config.Modsec[0].TimeLen
