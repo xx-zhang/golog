@@ -78,8 +78,8 @@ func timerPoint() {
 					dao.BulkInsert(items)
 					items = [] core.AuditLogItem{}
 				}
-				tFlag = false
 			}
+			tFlag = false
 			logging.Info.Println("程序 5s 心跳维持")
 		}
 	}
